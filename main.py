@@ -97,8 +97,7 @@ def create_ics(lessons, filename="schedule.ics"):
     if audiences:
       aud = audiences[0]
       room = aud.get("name", "")
-      building = aud.get("house", "")
-      location = f"Ауд. {room}, {building}".strip(", ")
+      location = f"Ауд. {room}".strip() if room else "Аудитория не указана"
     else:
       location = "Аудитория не указана"
 
