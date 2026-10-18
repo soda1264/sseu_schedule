@@ -1,0 +1,35 @@
+name: Update Schedule
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests icalendar
+
+      - name: Run schedule parser
+        env:
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          STUDENT_ID: "15651"
+        run: python main.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add schedule.ics
+          git commit -m "Auto-update schedule" || exit 0
+          git push
